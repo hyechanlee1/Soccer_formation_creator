@@ -1,0 +1,10 @@
+.controls {
+  margin-bottom: 20px;
+}
+
+.formation-image {
+  width: 100%;
+  height: 400px;
+  background-size: cover;
+  background-position: center;
+}

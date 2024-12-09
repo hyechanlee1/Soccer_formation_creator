@@ -1,0 +1,11 @@
+<div class="controls">
+    <label for="formation-select">Choose a formation:</label>
+    <select id="formation-select" (change)="onFormationChange($event)">
+        @for (formation of availableFormations; track $index) {
+        <option [value]="formation">{{ formation }}</option>
+        }
+    </select>
+</div>
+
+<div class="formation-image" [ngStyle]="{ 'background-image': backgroundImage() }">
+</div>
