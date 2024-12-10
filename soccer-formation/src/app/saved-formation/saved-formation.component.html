@@ -1,0 +1,15 @@
+<div class="saved-formation">
+  <h1>Saved Formations</h1>
+  <div *ngIf="formations?.length > 0; else noFormations">
+    <ul>
+      <li *ngFor="let formation of formations">
+        <strong>{{ formation.name }}</strong> - {{ formation.date }}
+        <button (click)="loadFormation(formation)">Load</button>
+        <button (click)="deleteFormation(formation)">Delete</button>
+      </li>
+    </ul>
+  </div>
+  <ng-template #noFormations>
+    <p>No saved formations available.</p>
+  </ng-template>
+</div>
