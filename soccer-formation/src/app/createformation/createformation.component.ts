@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-create-formation',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule, NavbarComponent],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './createformation.component.html',
   styleUrl: './createformation.component.css'
 })

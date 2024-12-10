@@ -1,7 +1,16 @@
 <header>
-  <h1>{{ title }}</h1>
-  <nav>
-    <a routerLink="/create-formation" routerLinkActive="active">Create Formation</a>
+  <nav class="navbar">
+    <img src="/soccer-formation/src/assets/images/soccer_ball_logo.png" alt="Soccer Ball Logo">
+    <ul class="nav-links">
+      <li><a routerLink="/create-formation" routerLinkActive="active">Create Formation</a></li>
+      <li><a routerLink="/soccer-formation/src/app/saved-formation" routerLinkActive="active">Saved Formation</a></li>
+
+    </ul>
+
   </nav>
+
+
+
+
 </header>
 <router-outlet></router-outlet>
