@@ -46,9 +46,37 @@
   color: #04F5FF;
 }
 
-.action-button:active {
-  transform: translateY(1px);
+.control-box {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  width: 30%; /* Adjust width as needed */
+  max-width: 1200px;
+  margin-left: 0; /* Remove auto centering */
+  margin-right: auto; /* Ensure it stays aligned to the left */
+  float: left; /* Make sure the box floats to the left */
 }
+
+.players-button {
+  background-color: white;
+  color: black;
+  font-size: 1.1rem;
+  padding: 12px 24px;
+  border: 2px solid black;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+  outline: none;
+  margin-bottom: 1rem;
+}
+
+.players-button:hover {
+  background-color: black;
+  color: white;
+}
+
 
 @media (max-width: 600px) {
   .navbar {
