@@ -43,9 +43,8 @@
             <input type="text" id="player-name" [(ngModel)]="newPlayerName" placeholder="Enter player name" />
         </div>
     </div>
-    }
-
     <button (click)="addPlayer()">Add Player</button>
+    }
 
     @if (players.length > 0) {
     <div>

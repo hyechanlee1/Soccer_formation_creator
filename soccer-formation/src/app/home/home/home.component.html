@@ -1,10 +1,8 @@
-<div class="homepage-container">
-    <h1>Welcome to the Formation Manager</h1>
-    <div class="button-group">
-      <button class="action-button" routerLink="/create-formation">Create Formation</button>
-      <button class="action-button" routerLink="/saved-formations">Saved Formations</button>
-    </div>
-  </div>
-  
-  <router-outlet></router-outlet>
-  
+<nav class="navbar">
+  <img src="/assets/images/soccer_ball_logo.png" alt="Soccer Ball Logo">
+  <ul class="nav-links">
+    <button class="action-button" routerLink="/create-formation">Create Formation</button>
+    <button class="action-button" routerLink="/saved-formations">Saved Formations</button>
+  </ul>
+</nav>
+<router-outlet></router-outlet>

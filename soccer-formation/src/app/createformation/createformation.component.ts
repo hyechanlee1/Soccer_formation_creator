@@ -12,15 +12,15 @@ import { RouterModule } from '@angular/router';
 })
 export class CreateFormationComponent {
   formations: { [key: string]: string } = {
-    "4-4-2": "assets/images/placeholder1.jpg",
-    "4-3-3": "assets/images/placeholder1.jpg"
+    "4-4-2": "/assets/images/placeholder1.jpg",
+    "4-3-3": "/assets/images/placeholder1.jpg"
     // add more formations and upload correct image for each formation
   };
   teamTitle: string = 'ENTER TITLE...';
   teamColor: string = '#ffffff'; // Default color (white)
-  showPosition: boolean = true; // Checkbox for showing position
-  showBackNumber: boolean = true; // Checkbox for showing back number
-  showText: boolean = true; // Checkbox for showing text
+  showPosition: boolean = false; // Checkbox for showing position
+  showBackNumber: boolean = false; // Checkbox for showing back number
+  showText: boolean = false; // Checkbox for showing text
   newPlayerNumber: number | null = null; // For new player number
   newPlayerName: string = 'UNKNOWN'; // For new player name
   players: { number: number, name: string }[] = []; // List of players
@@ -44,9 +44,15 @@ export class CreateFormationComponent {
   }
   addPlayer() {
     if (this.newPlayerNumber != null && this.newPlayerName.trim() !== '') {
-      this.players.push({ number: this.newPlayerNumber, name: this.newPlayerName });
-      this.newPlayerNumber = null; // Reset player number field
-      this.newPlayerName = 'UNKNOWN'; // Reset player name field
+      const playerExists = this.players.some(player => player.number === this.newPlayerNumber);
+  
+      if (playerExists) {
+        alert('Player number already exists!');
+      } else {
+        this.players.push({ number: this.newPlayerNumber, name: this.newPlayerName });
+        this.newPlayerNumber = null; // Reset player number field
+        this.newPlayerName = 'UNKNOWN'; // Reset player name field
+      }
     } else {
       alert('Please enter both player number and name!');
     }
