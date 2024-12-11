@@ -67,4 +67,8 @@ export class CreateFormationComponent {
       alert('Please enter a sub-player name!');
     }
   }
+  deletePlayer(playerNumber: number) {
+    // Remove the player with the specified number
+    this.players = this.players.filter(player => player.number !== playerNumber);
+  }
 }

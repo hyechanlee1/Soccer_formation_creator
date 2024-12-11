@@ -58,7 +58,9 @@
         <h3>Players List:</h3>
         <ul>
             @for (player of players; track $index) {
-            <li>{{ player.number }} - {{ player.name }}</li>
+            <li>{{ player.number }} - {{ player.name }}
+                <button (click)="deletePlayer(player.number)">Delete</button>
+            </li>
             }
         </ul>
     </div>
