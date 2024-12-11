@@ -1,11 +1,74 @@
 <div class="controls">
-    <label for="formation-select">Choose a formation:</label>
+    <div class="button-group">
+        <button class="action-button" (click)="toggleSection('styles')">Styles</button>
+        <button class="action-button" (click)="toggleSection('players')">Players</button>
+    </div>
+    @if (currentSection === 'styles') {
+    <label for="team-title">TITLE</label>
+    <input type="text" id="team-title" [(ngModel)]="teamTitle" placeholder="Enter a team title" />
+    <label for="formation-select">FORMATION (or drag and drop players)</label>
     <select id="formation-select" (change)="onFormationChange($event)">
         @for (formation of availableFormations; track $index) {
         <option [value]="formation">{{ formation }}</option>
         }
     </select>
-</div>
+    <label for="color-picker">UNIFORM COLOR</label>
+    <input type="color" id="color-picker" [(ngModel)]="teamColor" (change)="onColorChange()" />
+    <div class="checkbox-group">
+        <label>
+            <input type="checkbox" [(ngModel)]="showPosition" />
+            Show Position
+        </label>
+        <br>
+        <label>
+            <input type="checkbox" [(ngModel)]="showBackNumber" />
+            Show Back Number
+        </label>
+        <br>
+        <label>
+            <input type="checkbox" [(ngModel)]="showText" />
+            Don't Show Text
+        </label>
+    </div>
+    }
+    @if (currentSection === 'players') {
+    <div class="player-list">
+        <div class="player">
+            <label for="player-number">Player Number:</label>
+            <input type="number" id="player-number" [(ngModel)]="newPlayerNumber" placeholder="Enter player number" />
+        </div>
+        <div class="player">
+            <label for="player-name">Player Name:</label>
+            <input type="text" id="player-name" [(ngModel)]="newPlayerName" placeholder="Enter player name" />
+        </div>
+    </div>
+    }
 
-<div class="formation-image" [ngStyle]="{ 'background-image': backgroundImage() }">
+    <button (click)="addPlayer()">Add Player</button>
+
+    @if (players.length > 0) {
+    <div>
+        <h3>Players List:</h3>
+        <ul>
+            @for (player of players; track $index) {
+            <li>{{ player.number }} - {{ player.name }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <div class="formation-image" [ngStyle]="{ 'background-image': backgroundImage() }">
+        @if (showPosition) {
+        <!-- add logic to show position of each  player-->
+        <div></div>
+        }
+        @if (showBackNumber) {
+        <div></div>
+        <!-- add logic for showing back number -->
+        }
+        @if (showText) {
+        <!-- add logic for showing back number -->
+        <div></div>
+        }
+    </div>
 </div>
