@@ -23,7 +23,9 @@ export class CreateFormationComponent {
   showText: boolean = false; // Checkbox for showing text
   newPlayerNumber: number | null = null; // For new player number
   newPlayerName: string = 'UNKNOWN'; // For new player name
+  newSubPlayerName: string = ''; // For new sub-player name
   players: { number: number, name: string }[] = []; // List of players
+  subplayers: { name: string }[] = []; // List of sub players
   currentSection: string = 'styles';
 
   availableFormations = Object.keys(this.formations);
@@ -55,6 +57,14 @@ export class CreateFormationComponent {
       }
     } else {
       alert('Please enter both player number and name!');
+    }
+  }
+  addSubPlayer() {
+    if (this.newSubPlayerName.trim() !== '') {
+      this.subplayers.push({ name: this.newSubPlayerName });
+      this.newSubPlayerName = ''; // Reset sub-player name field
+    } else {
+      alert('Please enter a sub-player name!');
     }
   }
 }
