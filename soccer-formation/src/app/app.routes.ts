@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home/home.component';
 import { SavedformationsComponent } from './savedformations/savedformations/savedformations.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/create-formation', pathMatch: 'full' },
-    { path: 'create-formation', component: CreateFormationComponent },
+    { path: '', component: HomeComponent },
+    { path: 'create-formation', component: CreateFormationComponent, pathMatch: 'full'},
+    { path: 'saved-formations', component: SavedformationsComponent, pathMatch: 'full'}
   ];
