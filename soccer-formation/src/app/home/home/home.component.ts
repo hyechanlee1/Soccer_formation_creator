@@ -28,7 +28,7 @@ export class HomeComponent {
 
     // add more formations and upload correct image for each formation
   };
-  teamTitle: string = 'ENTER TITLE...';
+  teamTitle: string = '';
   teamColor: string = '#ffffff'; // Default color (white)
   showPosition: boolean = false; // Checkbox for showing position
   showBackNumber: boolean = false; // Checkbox for showing back number
