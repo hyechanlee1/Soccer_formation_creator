@@ -14,6 +14,8 @@
           <button class="players-button" (click)="toggleSection('styles')">Styles</button>
           <button class="players-button" (click)="toggleSection('players')">Players</button>
         </div>
+        <hr class="separator" />
+
         @if (currentSection === 'styles') {
         <label for="team-title">TITLE</label>
         <input type="text" id="team-title" [(ngModel)]="teamTitle" placeholder="Enter a team title" />
@@ -23,9 +25,9 @@
           <option [value]="formation">{{ formation }}</option>
           }
         </select>
-        <label for="color-picker">UNIFORM COLOR</label>
-        <input type="color" id="color-picker" [(ngModel)]="teamColor" (change)="onColorChange()" />
-        <div class="checkbox-group">
+        <!-- <label for="color-picker">UNIFORM COLOR</label>
+        <input type="color" id="color-picker" [(ngModel)]="teamColor" (change)="onColorChange()" /> -->
+        <!-- <div class="checkbox-group">
           <label>
             <input type="checkbox" [(ngModel)]="showPosition" />
             Show Position
@@ -40,7 +42,7 @@
             <input type="checkbox" [(ngModel)]="showText" />
             Don't Show Text
           </label>
-        </div>
+        </div> -->
         }
         @if (currentSection === 'players') {
         <div class="player-list">

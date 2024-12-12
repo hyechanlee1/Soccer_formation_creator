@@ -1,3 +1,7 @@
+body {
+  background-color: #38003C;
+}
+
 .navbar {
   position: relative;
   top: 0;
@@ -11,24 +15,6 @@
   align-items: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-}
-
-.left-column {
-  flex: 0 0 30%;
-  margin-right: 2rem;
-}
-
-.formation-image {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-size: cover;
-  background-position: center;
-  height: 600px;
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .navbar img {
@@ -66,19 +52,14 @@
 
 .control-box {
   background-color: #f0f0f0;
-  padding: 20px;
+  padding: 40px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 20px 0;
-  width: 30%;
-  /* Adjust width as needed */
-  max-width: 1200px;
+  margin: 10px 0;
+  width: 50%;
+  height: 100%;
   margin-left: 0;
-  /* Remove auto centering */
   margin-right: auto;
-  /* Ensure it stays aligned to the left */
-  float: left;
-  /* Make sure the box floats to the left */
 }
 
 .players-button {
@@ -87,11 +68,10 @@
   font-size: 1.1rem;
   padding: 12px 24px;
   border: 2px solid black;
-  border-radius: 4px;
+  border-radius: 25px;
   cursor: pointer;
   transition: 0.3s;
   outline: none;
-  margin-bottom: 1rem;
 }
 
 .players-button:hover {
@@ -99,6 +79,62 @@
   color: white;
 }
 
+.players-button:focus-within {
+  background-color: black;
+  color: white;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+hr {
+  margin: 20px;
+  margin-bottom: 50px;
+}
+
+.controls label {
+  display: block;
+  margin: 20px;
+  size: 500px;
+  font-weight: bold;
+}
+
+.controls input {
+  border: none;
+  border-radius: 25px;
+  padding: 10px;
+  width: 80%;
+}
+
+.container {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.left-column {
+  flex: 0 0 30%; /* Set the left column to 30% width */
+}
+
+.right-column {
+  flex: 1; /* Allow the right column to take the remaining space */
+}
+
+.formation-image {
+  flex: 1;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 60%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
 @media (max-width: 600px) {
   .container {

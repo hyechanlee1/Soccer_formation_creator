@@ -11,8 +11,21 @@ import { CommonModule } from '@angular/common';
 })
 export class HomeComponent {
   formations: { [key: string]: string } = {
-    "4-4-2": "/assets/images/placeholder1.jpg",
-    "4-3-3": "/assets/images/placeholder1.jpg"
+    "3-1-4-2": "/assets/images/3-1-4-2.png",
+    "3-4-3": "/assets/images/3-4-3.png",
+    "3-5-2": "/assets/images/3-5-2.png",
+    "4-1-2-1-2-narrow": "/assets/images/4-1-2-1-2 Narrow.png",
+    "4-1-4-1": "/assets/images/4-1-4-1.png",
+    "4-2-3-1": "/assets/images/4-2-3-1.png",
+    "4-2-4": "/assets/images/4-2-4.png",
+    "4-3-3": "/assets/images/4-3-3.png",
+    "4-4-1-1": "/assets/images/4-4-1-1.png",
+    "4-4-2-diamond": "/assets/images/4-4-2 Diamond.png",
+    "4-4-2": "/assets/images/4-4-2.png",
+    "5-3-2": "/assets/images/5-3-2.png",
+    "5-4-1": "/assets/images/5-4-1.png"
+
+
     // add more formations and upload correct image for each formation
   };
   teamTitle: string = 'ENTER TITLE...';
