@@ -18,18 +18,6 @@ export class TeamService {
     return setDoc(formationRef, formationData);
   }
 
-  // Add a team under a specific formation in Firestore
-  async addTeam(teamTitle: string, players: { name: string, number: number }[], formation: string) {
-    const formationRef = collection(this.firestore, 'formations', formation, 'teams');
-
-    // Add team under the specified formation
-    const docRef = await addDoc(formationRef, {
-      teamTitle,
-      players
-    });
-    return docRef;
-  }
-
   // Delete a player from a team in a specific formation
   async deletePlayer(formation: string, teamId: string, playerNumber: number) {
     const teamRef = doc(this.firestore, `formations/${formation}/teams/${teamId}`);
