@@ -114,7 +114,6 @@ export class HomeComponent {
   submitTeam() {
     if (this.teamTitle && this.players.length > 0) {
       const formationData = {
-        formation: this.currentFormation,
         players: this.players,  // Add players data here
       };
 
