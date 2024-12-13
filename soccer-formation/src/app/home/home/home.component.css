@@ -50,10 +50,11 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 60%;
-  height:fit-content; /* Adjusts the height to fill the viewport minus the padding */
+  height: fit-content;
+  /* Adjusts the height to fill the viewport minus the padding */
   margin-left: 0;
   margin-right: auto;
-  
+
 }
 
 .players-button {
@@ -111,6 +112,7 @@ hr {
   padding: 10px;
   width: 80%;
 }
+
 .container {
   display: flex;
   justify-content: flex-start;
@@ -118,11 +120,13 @@ hr {
 }
 
 .left-column {
-  flex: 0 0 30%; /* Set the left column to 30% width */
+  flex: 0 0 30%;
+  /* Set the left column to 30% width */
 }
 
 .right-column {
-  flex: 1; /* Allow the right column to take the remaining space */
+  flex: 1;
+  /* Allow the right column to take the remaining space */
 }
 
 .formation-image {

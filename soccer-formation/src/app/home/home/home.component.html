@@ -18,7 +18,8 @@
 
         @if (currentSection === 'styles') {
         <label for="team-title">TITLE</label>
-        <input type="text" id="team-title" [(ngModel)]="teamTitle" placeholder="Enter a team title" />
+        <input type="text" id="team-title" [(ngModel)]="teamTitle" (ngModelChange)="onTeamTitleChange()"
+          placeholder="Enter a team title" />
         <label for="formation-select">FORMATION (or drag and drop players)</label>
         <select id="formation-select" (change)="onFormationChange($event)">
           @for (formation of availableFormations; track $index) {
@@ -89,6 +90,9 @@
         </div>
         }
       </div>
+      @if (currentSection === 'players') {
+      <button (click)="submitTeam()">Submit Team</button>
+      }
     </div>
   </div>
   <div class="right-column">
