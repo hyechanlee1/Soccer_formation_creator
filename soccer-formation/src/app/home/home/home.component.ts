@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { TeamService } from '../../services/team.service';  // Adjust the path if necessary
 
 @Component({
   selector: 'app-home',
@@ -9,7 +10,9 @@ import { CommonModule } from '@angular/common';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
+
 export class HomeComponent {
+  // Define the formations and their associated images
   formations: { [key: string]: string } = {
     "3-1-4-2": "/assets/images/3-1-4-2.png",
     "3-4-3": "/assets/images/3-4-3.png",
@@ -24,53 +27,75 @@ export class HomeComponent {
     "4-4-2": "/assets/images/4-4-2.png",
     "5-3-2": "/assets/images/5-3-2.png",
     "5-4-1": "/assets/images/5-4-1.png"
-
-
-    // add more formations and upload correct image for each formation
   };
+
+  // Default team and form values
   teamTitle: string = '';
-  teamColor: string = '#ffffff'; // Default color (white)
-  showPosition: boolean = false; // Checkbox for showing position
-  showBackNumber: boolean = false; // Checkbox for showing back number
-  showText: boolean = false; // Checkbox for showing text
-  newPlayerNumber: number | null = null; // For new player number
-  newPlayerName: string = 'UNKNOWN'; // For new player name
-  newSubPlayerName: string = ''; // For new sub-player name
-  players: { number: number, name: string }[] = []; // List of players
-  subplayers: { name: string }[] = []; // List of sub players
+  teamColor: string = '#ffffff';
+  showPosition: boolean = false;
+  showBackNumber: boolean = false;
+  showText: boolean = false;
+  newPlayerNumber: number | null = null;
+  newPlayerName: string = '';
+  newSubPlayerName: string = '';
+
+  // Lists to store players and sub-players
+  players: { number: number, name: string }[] = [];
+  subplayers: { name: string }[] = [];
+
+  // Current section and formation tracking
   currentSection: string = 'styles';
-
   availableFormations = Object.keys(this.formations);
-  currentFormation = this.availableFormations[0]; // Default to the first formation
+  currentFormation = this.availableFormations[0]; // Default formation
 
+  constructor(private teamService: TeamService) { }
+
+  // This method will clear the players list
+  clearPlayersList() {
+    this.players = [];
+  }
+
+  // Get the current formation background image URL
   backgroundImage(): string {
     return `url('${this.formations[this.currentFormation]}')`;
   }
 
+  // You can trigger this whenever the teamTitle changes
+  onTeamTitleChange() {
+    this.clearPlayersList();
+  }
+
+  // Handle changes in formation selection
   onFormationChange(event: Event) {
     this.currentFormation = (event.target as HTMLSelectElement).value;
+    this.clearPlayersList()
   }
+
+  // Handle color change (potential for additional logic)
   onColorChange() {
     console.log('Selected color:', this.teamColor);
   }
+
+  // Toggle section visibility for styling, players, etc.
   toggleSection(section: string) {
     this.currentSection = section;
   }
-  addPlayer() {
-    if (this.newPlayerNumber != null && this.newPlayerName.trim() !== '') {
-      const playerExists = this.players.some(player => player.number === this.newPlayerNumber);
 
-      if (playerExists) {
-        alert('Player number already exists!');
-      } else {
-        this.players.push({ number: this.newPlayerNumber, name: this.newPlayerName });
-        this.newPlayerNumber = null; // Reset player number field
-        this.newPlayerName = 'UNKNOWN'; // Reset player name field
-      }
-    } else {
-      alert('Please enter both player number and name!');
+  // Method to add a player to the list
+  addPlayer() {
+    if (this.newPlayerName && this.newPlayerNumber !== null) {
+      this.players.push({
+        name: this.newPlayerName,
+        number: this.newPlayerNumber
+      });
+
+      // Reset the input fields
+      this.newPlayerName = '';
+      this.newPlayerNumber = null;
     }
   }
+
+  // Add a sub-player
   addSubPlayer() {
     if (this.newSubPlayerName.trim() !== '') {
       this.subplayers.push({ name: this.newSubPlayerName });
@@ -79,8 +104,29 @@ export class HomeComponent {
       alert('Please enter a sub-player name!');
     }
   }
+
+  // Delete a player by number
   deletePlayer(playerNumber: number) {
-    // Remove the player with the specified number
+    // Filter out the player with the specified number
     this.players = this.players.filter(player => player.number !== playerNumber);
+  }
+
+  submitTeam() {
+    if (this.teamTitle && this.players.length > 0) {
+      const formationData = {
+        formation: this.currentFormation,
+        players: this.players,  // Add players data here
+      };
+
+      // Use teamTitle as collection, currentFormation as document
+      this.teamService.addFormation(this.teamTitle, this.currentFormation, formationData)
+        .then(() => {
+          alert('Team successfully submitted!');
+        })
+        .catch((error: any) => {
+          alert('Error adding team: ' + error.message);
+          console.error('Error adding team: ', error);
+        });
+    }
   }
 }
