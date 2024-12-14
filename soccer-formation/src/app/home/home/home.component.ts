@@ -37,22 +37,29 @@ export class HomeComponent {
   showText: boolean = false;
   newPlayerNumber: number | null = null;
   newPlayerName: string = '';
+  newPlayerPosition: string = '';
   newSubPlayerName: string = '';
 
   // Lists to store players and sub-players
-  players: { number: number, name: string }[] = [];
+  players: { [number: string]: { name: string; position: string } } = {};
+  newPlayer = { number: null, name: '', position: '' }; // Define newPlayer
+  playersMap = new Map(); // Define playersMap
   subplayers: { name: string }[] = [];
 
   // Current section and formation tracking
   currentSection: string = 'styles';
   availableFormations = Object.keys(this.formations);
-  currentFormation = this.availableFormations[0]; // Default formation
+  currentFormation = this.availableFormations[0] || ''; // Default formation
 
   constructor(private teamService: TeamService) { }
 
-  // This method will clear the players list
-  clearPlayersList() {
-    this.players = [];
+  // Utility to reset the form after submission
+  resetForm() {
+    this.teamTitle = '';
+    this.teamColor = '#ffffff';
+    this.players = {};
+    this.subplayers = [];
+    this.currentFormation = this.availableFormations[0];
   }
 
   // Get the current formation background image URL
@@ -60,72 +67,91 @@ export class HomeComponent {
     return `url('${this.formations[this.currentFormation]}')`;
   }
 
-  // You can trigger this whenever the teamTitle changes
-  onTeamTitleChange() {
-    this.clearPlayersList();
-  }
-
-  // Handle changes in formation selection
-  onFormationChange(event: Event) {
-    this.currentFormation = (event.target as HTMLSelectElement).value;
-    this.clearPlayersList()
-  }
-
-  // Handle color change (potential for additional logic)
-  onColorChange() {
-    console.log('Selected color:', this.teamColor);
-  }
-
   // Toggle section visibility for styling, players, etc.
   toggleSection(section: string) {
     this.currentSection = section;
   }
 
-  // Method to add a player to the list
-  addPlayer() {
-    if (this.newPlayerName && this.newPlayerNumber !== null) {
-      this.players.push({
-        name: this.newPlayerName,
-        number: this.newPlayerNumber
-      });
+  // You can trigger this whenever the teamTitle changes
+  onTeamTitleChange() {
+    this.playersMap.clear();
+  }
 
-      // Reset the input fields
-      this.newPlayerName = '';
-      this.newPlayerNumber = null;
+  // Handle changes in formation selection
+  onFormationChange(event: Event) {
+    this.currentFormation = (event.target as HTMLSelectElement).value;
+    this.playersMap.clear();
+  }
+
+  // Add a player to the map
+  addPlayer() {
+    if (this.newPlayer.number !== null &&
+      this.newPlayer.number !== undefined &&
+      this.newPlayer.name.trim() &&
+      this.newPlayer.position.trim()) {
+      this.playersMap.set(this.newPlayer.number, {
+        name: this.newPlayer.name,
+        position: this.newPlayer.position
+      });
+      this.newPlayer = { number: null, name: '', position: '' };
+    } else {
+      alert('Please fill in all player details.');
     }
   }
 
   // Add a sub-player
   addSubPlayer() {
-    if (this.newSubPlayerName.trim() !== '') {
+    if (this.newSubPlayerName.trim()) {
       this.subplayers.push({ name: this.newSubPlayerName });
-      this.newSubPlayerName = ''; // Reset sub-player name field
+      this.newSubPlayerName = '';
     } else {
-      alert('Please enter a sub-player name!');
+      alert('Please enter a sub-player name.');
     }
   }
 
   // Delete a player by number
   deletePlayer(playerNumber: number) {
-    // Filter out the player with the specified number
-    this.players = this.players.filter(player => player.number !== playerNumber);
+    if (this.playersMap.has(playerNumber)) {
+      this.playersMap.delete(playerNumber);
+    } else {
+      alert('Player not found.');
+    }
   }
 
-  submitTeam() {
-    if (this.teamTitle && this.players.length > 0) {
-      const formationData = {
-        players: this.players,  // Add players data here
+  // Submit team data to the TeamService
+  async submitTeam() {
+    try {
+      // Ensure necessary data is available
+      if (!this.teamTitle || !this.currentFormation || Object.keys(this.playersMap).length === 0) {
+        alert('Please ensure all team details are provided.');
+        return;
+      }
+
+      // Prepare team data to be submitted
+      const teamData = {
+        title: this.teamTitle,
+        formation: this.currentFormation,
+        players: Array.from(this.playersMap.values()), // Convert the players map to an array
+        subplayers: this.subplayers // Array of sub-players
       };
 
-      // Use teamTitle as collection, currentFormation as document
-      this.teamService.addFormation(this.teamTitle, this.currentFormation, formationData)
-        .then(() => {
-          alert('Team successfully submitted!');
-        })
-        .catch((error: any) => {
-          alert('Error adding team: ' + error.message);
-          console.error('Error adding team: ', error);
-        });
+      // Submit the data to the TeamService
+      await this.teamService.submitTeam(teamData);
+
+      // Inform the user of successful submission
+      alert('Team submitted successfully!');
+
+      // Reset the form after submission
+      this.resetForm();
+    } catch (error) {
+      // Handle any errors that occur during submission
+      console.error('Error submitting team:', error);
+      alert('An error occurred while submitting the team. Please try again.');
     }
+  }
+
+  // Method to get the keys of playersMap
+  getPlayersCount(): number {
+    return this.playersMap.size; // Return the number of players in the Map
   }
 }
