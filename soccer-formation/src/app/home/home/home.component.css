@@ -144,12 +144,10 @@ hr {
 
 .left-column {
   flex: 0 0 30%;
-  /* Set the left column to 30% width */
 }
 
 .right-column {
   flex: 1;
-  /* Allow the right column to take the remaining space */
 }
 
 .formation-image {
@@ -185,8 +183,8 @@ hr {
   }
   .left-column,
   .right-column {
-    width: 100%; /* Take full width */
-    flex: 0; /* Do not stretch beyond 100% */
+    width: 100%;
+    flex: 0;
   }
 
   .formation-image {
