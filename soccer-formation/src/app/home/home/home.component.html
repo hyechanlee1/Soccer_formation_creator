@@ -100,8 +100,8 @@
       <ul>
         @for (player of playersMap.entries(); track $index) {
         <li>
-          {{ player[1].number }} - {{ player[1].name }} ({{ player[1].position }})
-          <button class="add-button" (click)="deletePlayer(player[1].number)">Delete</button>
+          {{ player[0] }} - {{ player[1].name }} ({{ player[1].position }})
+          <button (click)="deletePlayer(player[0])">Delete</button>
         </li>
         }
       </ul>
