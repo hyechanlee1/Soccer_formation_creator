@@ -77,7 +77,7 @@
       }
     </div>
   </div>
-  <div class="right-column">
+  <div class="center-column">
     <div class="formation-image" [ngStyle]="{ 'background-image': backgroundImage() }">
       @if (showPosition) {
       <!-- add logic to show position of each  player-->
@@ -101,7 +101,7 @@
         @for (player of playersMap.entries(); track $index) {
         <li>
           {{ player[1].number }} - {{ player[1].name }} ({{ player[1].position }})
-          <button (click)="deletePlayer(player[1].number)">Delete</button>
+          <button class="add-button" (click)="deletePlayer(player[1].number)">Delete</button>
         </li>
         }
       </ul>
