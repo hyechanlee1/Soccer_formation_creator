@@ -110,7 +110,7 @@ export class HomeComponent {
   }
 
   // Delete a player by number
-  deletePlayer(playerNumber: number) {
+  deletePlayer(playerNumber: string) {
     if (this.playersMap.has(playerNumber)) {
       this.playersMap.delete(playerNumber);
     } else {
@@ -121,8 +121,11 @@ export class HomeComponent {
   // Submit team data to the TeamService
   async submitTeam() {
     try {
+      // Debugging: Log the playersMap to check its contents
+      console.log('Players Map before submission:', Array.from(this.playersMap.entries()));
+
       // Ensure necessary data is available
-      if (!this.teamTitle || !this.currentFormation || Object.keys(this.playersMap).length === 0) {
+      if (!this.teamTitle || this.playersMap.size === 0) {
         alert('Please ensure all team details are provided.');
         return;
       }
@@ -131,7 +134,11 @@ export class HomeComponent {
       const teamData = {
         title: this.teamTitle,
         formation: this.currentFormation,
-        players: Array.from(this.playersMap.values()), // Convert the players map to an array
+        players: Array.from(this.playersMap.entries()).map(([number, player]) => ({
+          number: number,
+          name: player.name,
+          position: player.position
+        })),
         subplayers: this.subplayers // Array of sub-players
       };
 

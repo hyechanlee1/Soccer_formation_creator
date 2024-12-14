@@ -15,7 +15,10 @@ export class TeamService {
 
     // Add the formation data as a document in the team collection
     const formationRef = doc(teamRef, formation);
-    return setDoc(formationRef, formationData);
+    return setDoc(formationRef, {
+      ...formationData,
+      players: {} // Initialize players as an empty map
+    });
   }
 
   // Delete a player from a team in a specific formation using a map
@@ -64,15 +67,15 @@ export class TeamService {
   // Submit team data
   async submitTeam(teamData: { title: string, formation: string, players: any[], subplayers: any[] }) {
     try {
-      // Get the reference to the correct team collection and formation
-      const teamRef = collection(this.firestore, `formations/${teamData.formation}/teams`);
+      // Get the reference to the correct team collection
+      const teamRef = collection(this.firestore, teamData.title); // Use team title as collection
 
-      // Add the team data to Firestore (or use `setDoc` to overwrite if you prefer)
-      await setDoc(doc(teamRef), {
-        title: teamData.title,
-        formation: teamData.formation,
-        players: teamData.players,
-        subplayers: teamData.subplayers
+      // Add the team data to Firestore without the formation in the field section
+      await setDoc(doc(teamRef, teamData.formation), { // Use formation as document ID
+        players: teamData.players.reduce((acc, player) => {
+          acc[player.number] = { name: player.name, position: player.position }; // Map player number to object
+          return acc;
+        }, {})
       });
     } catch (error) {
       console.error('Error submitting team data:', error);
