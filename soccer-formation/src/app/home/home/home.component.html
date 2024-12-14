@@ -49,11 +49,16 @@
         <div class="player-list">
           <div class="player">
             <label for="player-number">Player Number:</label>
-            <input type="number" id="player-number" [(ngModel)]="newPlayerNumber" placeholder="Enter player number" />
+            <input type="number" id="player-number" [(ngModel)]="newPlayer.number" placeholder="Enter player number" />
           </div>
           <div class="player">
             <label for="player-name">Player Name:</label>
-            <input type="text" id="player-name" [(ngModel)]="newPlayerName" placeholder="Enter player name" />
+            <input type="text" id="player-name" [(ngModel)]="newPlayer.name" placeholder="Enter player name" />
+          </div>
+          <div class="player">
+            <label for="player-position">Player Position:</label>
+            <input type="text" id="player-position" [(ngModel)]="newPlayer.position"
+              placeholder="Enter player Position" />
           </div>
         </div>
         <button class="add-button" (click)="addPlayer()">Add Player</button>
@@ -65,29 +70,6 @@
           </div>
         </div>
         <button class="add-button" (click)="addSubPlayer()">Add Sub-Player</button>
-        }
-
-        @if (players.length > 0) {
-        <div>
-          <h3>Players List:</h3>
-          <ul>
-            @for (player of players; track $index) {
-            <li>{{ player.number }} - {{ player.name }}
-              <button (click)="deletePlayer(player.number)">Delete</button>
-            </li>
-            }
-          </ul>
-        </div>
-        }
-        @if (subplayers.length > 0) {
-        <div>
-          <h3>Sub Players List:</h3>
-          <ul>
-            @for (player of subplayers; track $index) {
-            <li>{{ player.name }}</li>
-            }
-          </ul>
-        </div>
         }
       </div>
       @if (currentSection === 'players') {
@@ -110,6 +92,32 @@
       <div></div>
       }
     </div>
+  </div>
+  <div class="right-column">
+    @if (getPlayersCount() > 0) {
+    <div>
+      <h3>Players List:</h3>
+      <ul>
+        @for (player of playersMap.entries(); track $index) {
+        <li>
+          {{ player[1].number }} - {{ player[1].name }} ({{ player[1].position }})
+          <button (click)="deletePlayer(player[1].number)">Delete</button>
+        </li>
+        }
+      </ul>
+    </div>
+    }
+    @if (subplayers.length > 0) {
+    <div>
+      <h3>Sub Players List:</h3>
+      <ul>
+        @for (player of subplayers; track $index) {
+        <li>{{ player.name }}</li>
+        }
+      </ul>
+    </div>
+    }
+
   </div>
 </div>
 <router-outlet></router-outlet>
