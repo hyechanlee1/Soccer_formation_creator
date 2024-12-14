@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SavedformationsComponent } from './savedformations.component';
 
 describe('SavedformationsComponent', () => {
@@ -10,7 +9,7 @@ describe('SavedformationsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [SavedformationsComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SavedformationsComponent);
     component = fixture.componentInstance;

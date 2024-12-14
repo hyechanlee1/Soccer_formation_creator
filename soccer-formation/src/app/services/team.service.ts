@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, updateDoc, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { Firestore, collection, updateDoc, doc, getDoc, setDoc, query, getDocs } from '@angular/fire/firestore';;
 
+// Define a type for player
+interface Player {
+  name: string;
+  position: string;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -8,16 +13,25 @@ export class TeamService {
 
   constructor(private firestore: Firestore) { }
 
-  // Method to add a formation document
-  addFormation(teamTitle: string, formation: string, formationData: any): Promise<void> {
-    // Reference to the collection for the team title
-    const teamRef = collection(this.firestore, teamTitle);
+  // Add a player to a team in a specific formation using a map
+  async addPlayer(formation: string, teamId: string, playerNumber: number, playerName: string, playerPosition: string) {
+    const teamRef = doc(this.firestore, `formations/${formation}/teams/${teamId}`);
 
-    // Add the formation data as a document in the team collection
-    const formationRef = doc(teamRef, formation);
-    return setDoc(formationRef, {
-      ...formationData,
-      players: {} // Initialize players as an empty map
+    // Fetch the current team data
+    const docSnapshot = await getDoc(teamRef);
+    let playersMap: { [key: number]: Player } = {};
+
+    if (docSnapshot.exists()) {
+      const teamData = docSnapshot.data();
+      playersMap = teamData?.['players'] || {}; // Fetch existing players map or initialize as empty
+    }
+
+    // Add or update the player in the map
+    playersMap[playerNumber] = { name: playerName, position: playerPosition };
+
+    // Update the team's players map
+    await updateDoc(teamRef, {
+      players: playersMap
     });
   }
 
@@ -42,25 +56,17 @@ export class TeamService {
     }
   }
 
-  // Add a player to a team in a specific formation using a map
-  async addPlayer(formation: string, teamId: string, playerNumber: number, playerName: string, playerPosition: string) {
-    const teamRef = doc(this.firestore, `formations/${formation}/teams/${teamId}`);
 
-    // Fetch the current team data
-    const docSnapshot = await getDoc(teamRef);
-    let playersMap: { [key: number]: { name: string; position: string } } = {};
+  // Method to add a formation document
+  addFormation(teamTitle: string, formation: string, formationData: any): Promise<void> {
+    // Reference to the collection for the team title
+    const teamRef = collection(this.firestore, teamTitle);
 
-    if (docSnapshot.exists()) {
-      const teamData = docSnapshot.data();
-      playersMap = teamData?.['players'] || {}; // Fetch existing players map or initialize as empty
-    }
-
-    // Add or update the player in the map
-    playersMap[playerNumber] = { name: playerName, position: playerPosition };
-
-    // Update the team's players map
-    await updateDoc(teamRef, {
-      players: playersMap
+    // Add the formation data as a document in the team collection
+    const formationRef = doc(teamRef, formation);
+    return setDoc(formationRef, {
+      ...formationData,
+      players: {} // Initialize players as an empty map
     });
   }
 
@@ -81,5 +87,18 @@ export class TeamService {
       console.error('Error submitting team data:', error);
       throw new Error('Error submitting team data');
     }
+  }
+
+  // Fetch saved formations for a specific team title
+  async getSavedFormations(teamTitle: string): Promise<any[]> {
+    const teamRef = collection(this.firestore, teamTitle);
+    const formationQuery = query(teamRef);
+
+    const querySnapshot = await getDocs(formationQuery);
+    const formations = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    return formations;
   }
 }

@@ -121,8 +121,6 @@ export class HomeComponent {
   // Submit team data to the TeamService
   async submitTeam() {
     try {
-      // Debugging: Log the playersMap to check its contents
-      console.log('Players Map before submission:', Array.from(this.playersMap.entries()));
 
       // Ensure necessary data is available
       if (!this.teamTitle || this.playersMap.size === 0) {
