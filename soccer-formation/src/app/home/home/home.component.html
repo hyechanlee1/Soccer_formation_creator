@@ -56,7 +56,7 @@
             <input type="text" id="player-name" [(ngModel)]="newPlayerName" placeholder="Enter player name" />
           </div>
         </div>
-        <button (click)="addPlayer()">Add Player</button>
+        <button class="add-button" (click)="addPlayer()">Add Player</button>
         <div class="sub-player-list">
           <div class="sub-player">
             <label for="sub-player-name">Sub-Player Name:</label>
@@ -64,7 +64,7 @@
               placeholder="Enter sub-player name" />
           </div>
         </div>
-        <button (click)="addSubPlayer()">Add Sub-Player</button>
+        <button class="add-button" (click)="addSubPlayer()">Add Sub-Player</button>
         }
 
         @if (players.length > 0) {
@@ -91,7 +91,7 @@
         }
       </div>
       @if (currentSection === 'players') {
-      <button (click)="submitTeam()">Submit Team</button>
+      <button class="add-button" (click)="submitTeam()">Submit Team</button>
       }
     </div>
   </div>

@@ -51,7 +51,6 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 60%;
   height: fit-content;
-  /* Adjusts the height to fill the viewport minus the padding */
   margin-left: 0;
   margin-right: auto;
 
@@ -90,6 +89,9 @@
 hr {
   margin: 20px;
   margin-bottom: 50px;
+  height: 2px;
+  border: none;
+  background-color: #000;
 }
 
 .controls label {
@@ -111,6 +113,25 @@ hr {
   border-radius: 25px;
   padding: 10px;
   width: 80%;
+}
+
+.add-button {
+  background-color: white;
+  color: black;
+  font-size: 15px;
+  padding: 5px 24px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: 0.3s;
+  outline: none;
+  margin-top: 15px;
+
+}
+
+.add-button:hover {
+  background-color: #38003C;
+  color: #00FF85;
 }
 
 .container {
