@@ -1,104 +1,78 @@
-import { Injectable } from '@angular/core';
-import { Firestore, collection, updateDoc, doc, getDoc, setDoc, query, getDocs } from '@angular/fire/firestore';;
+import { Injectable, inject } from '@angular/core';
+import { Firestore, collection, addDoc, query, collectionData, orderBy, where, getDocs } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 // Define a type for player
-interface Player {
-  name: string;
-  position: string;
+export interface FirestoreRec {
+  teamTitle: string,
+  formation: string,
+  playerNumber: number,
+  playerName: string,
+  playerPosition: string,
+  subPlayer?: string
 }
+
 @Injectable({
   providedIn: 'root'
 })
 export class TeamService {
 
-  constructor(private firestore: Firestore) { }
+  public teams$: Observable<FirestoreRec[]>;
 
-  // Add a player to a team in a specific formation using a map
-  async addPlayer(formation: string, teamId: string, playerNumber: number, playerName: string, playerPosition: string) {
-    const teamRef = doc(this.firestore, `formations/${formation}/teams/${teamId}`);
+  private firestore: Firestore = inject(Firestore);
 
-    // Fetch the current team data
-    const docSnapshot = await getDoc(teamRef);
-    let playersMap: { [key: number]: Player } = {};
+  teamCollection = collection(this.firestore, 'teams')
 
-    if (docSnapshot.exists()) {
-      const teamData = docSnapshot.data();
-      playersMap = teamData?.['players'] || {}; // Fetch existing players map or initialize as empty
-    }
-
-    // Add or update the player in the map
-    playersMap[playerNumber] = { name: playerName, position: playerPosition };
-
-    // Update the team's players map
-    await updateDoc(teamRef, {
-      players: playersMap
-    });
-  }
-
-  // Delete a player from a team in a specific formation using a map
-  async deletePlayer(formation: string, teamId: string, playerNumber: number) {
-    const teamRef = doc(this.firestore, `formations/${formation}/teams/${teamId}`);
-
-    // Fetch the current team data
-    const docSnapshot = await getDoc(teamRef);
-    if (docSnapshot.exists()) {
-      const teamData = docSnapshot.data();
-      const playersMap = teamData?.['players']; // Fetch the players map
-
-      if (playersMap && playersMap[playerNumber]) {
-        delete playersMap[playerNumber]; // Remove the player by key (player number)
-
-        // Update the team's players map
-        await updateDoc(teamRef, {
-          players: playersMap
-        });
-      }
-    }
-  }
-
-
-  // Method to add a formation document
-  addFormation(teamTitle: string, formation: string, formationData: any): Promise<void> {
-    // Reference to the collection for the team title
-    const teamRef = collection(this.firestore, teamTitle);
-
-    // Add the formation data as a document in the team collection
-    const formationRef = doc(teamRef, formation);
-    return setDoc(formationRef, {
-      ...formationData,
-      players: {} // Initialize players as an empty map
-    });
+  constructor() {
+    const q = query(this.teamCollection, orderBy('teamTitle'));
+    this.teams$ = collectionData(q, { idField: 'id' }) as Observable<FirestoreRec[]>;
   }
 
   // Submit team data
-  async submitTeam(teamData: { title: string, formation: string, players: any[], subplayers: any[] }) {
+  async submitTeam(
+    teamTitle: string,
+    formation: string,
+    playerName: string,
+    playerNumber: string,
+    playerPosition: string,
+    subPlayer?: string // subPlayer is optional
+  ) {
     try {
-      // Get the reference to the correct team collection
-      const teamRef = collection(this.firestore, teamData.title); // Use team title as collection
+      // Check if the player already exists by querying Firestore
+      const playerQuery = query(
+        this.teamCollection,
+        where('playerName', '==', playerName),
+        where('playerNumber', '==', playerNumber)
+      );
 
-      // Add the team data to Firestore without the formation in the field section
-      await setDoc(doc(teamRef, teamData.formation), { // Use formation as document ID
-        players: teamData.players.reduce((acc, player) => {
-          acc[player.number] = { name: player.name, position: player.position }; // Map player number to object
-          return acc;
-        }, {})
-      });
+      const querySnapshot = await getDocs(playerQuery);
+
+      if (!querySnapshot.empty) {
+        // Player already exists, return or notify
+        console.log('Player already exists.');
+        return;
+      }
+
+      // Create the team data object
+      const teamData: { [key: string]: any } = {
+        teamTitle: teamTitle,
+        formation: formation,
+        playerName: playerName,
+        playerNumber: playerNumber,
+        playerPosition: playerPosition
+      };
+
+      // Only add subPlayer to the object if it exists
+      if (subPlayer) {
+        teamData['subPlayer'] = subPlayer;
+      }
+
+      // Submit the team data to Firestore
+      await addDoc(this.teamCollection, teamData);
+
     } catch (error) {
       console.error('Error submitting team data:', error);
       throw new Error('Error submitting team data');
     }
-  }
-
-  // Fetch saved formations for a specific team title
-  async getSavedFormations(teamTitle: string): Promise<any[]> {
-    const teamRef = collection(this.firestore, teamTitle);
-    const formationQuery = query(teamRef);
-
-    const querySnapshot = await getDocs(formationQuery);
-    const formations = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    return formations;
   }
 }

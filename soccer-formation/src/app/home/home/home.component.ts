@@ -31,34 +31,36 @@ export class HomeComponent {
 
   // Default team and form values
   teamTitle: string = '';
-  teamColor: string = '#ffffff';
-  showPosition: boolean = false;
-  showBackNumber: boolean = false;
-  showText: boolean = false;
-  newPlayerNumber: number | null = null;
-  newPlayerName: string = '';
-  newPlayerPosition: string = '';
-  newSubPlayerName: string = '';
-
-  // Lists to store players and sub-players
-  players: { [number: string]: { name: string; position: string } } = {};
-  newPlayer = { number: null, name: '', position: '' }; // Define newPlayer
-  playersMap = new Map(); // Define playersMap
-  subplayers: { name: string }[] = [];
+  PlayerName: string = '';
+  PlayerNumber: string = '';
+  PlayerPosition: string = '';
+  SubPlayerName: string = '';
 
   // Current section and formation tracking
   currentSection: string = 'styles';
   availableFormations = Object.keys(this.formations);
   currentFormation = this.availableFormations[0] || ''; // Default formation
 
+  // Array to store added players
+  players: Array<{
+    number: string;
+    name: string;
+    position: string;
+  }> = [];
+
+  // Array to store added subplayers
+  subNames: Array<{
+    name: string;
+  }> = []
+
   constructor(private teamService: TeamService) { }
 
   // Utility to reset the form after submission
   resetForm() {
-    this.teamTitle = '';
-    this.teamColor = '#ffffff';
-    this.players = {};
-    this.subplayers = [];
+    this.PlayerName = '';
+    this.PlayerNumber = '';
+    this.PlayerPosition = '';
+    this.SubPlayerName = '';
     this.currentFormation = this.availableFormations[0];
   }
 
@@ -72,76 +74,121 @@ export class HomeComponent {
     this.currentSection = section;
   }
 
-  // You can trigger this whenever the teamTitle changes
-  onTeamTitleChange() {
-    this.playersMap.clear();
-  }
-
   // Handle changes in formation selection
   onFormationChange(event: Event) {
     this.currentFormation = (event.target as HTMLSelectElement).value;
-    this.playersMap.clear();
   }
 
-  // Add a player to the map
+  onTeamTitleChange(newTitle: string) {
+    // Trim the input and assign it to the teamTitle property
+    this.teamTitle = newTitle.trim();
+
+    // Optional: Add validation logic if needed
+    if (this.teamTitle.length === 0) {
+      alert('Team title cannot be empty.');
+    }
+  }
+
+
+  // Add a player to the team
   addPlayer() {
-    if (this.newPlayer.number !== null &&
-      this.newPlayer.number !== undefined &&
-      this.newPlayer.name.trim() &&
-      this.newPlayer.position.trim()) {
-      this.playersMap.set(this.newPlayer.number, {
-        name: this.newPlayer.name,
-        position: this.newPlayer.position
-      });
-      this.newPlayer = { number: null, name: '', position: '' };
-    } else {
-      alert('Please fill in all player details.');
+    // Validate required fields
+    if (!this.PlayerName.trim() || !this.PlayerNumber || !this.PlayerPosition.trim()) {
+      alert('Please ensure all player details are provided.');
+      return;
     }
+
+    // Check if the player already exists in the players list (based on name and number)
+    const playerExists = this.players.some(player =>
+      player.name === this.PlayerName.trim() && player.number === this.PlayerNumber
+    );
+
+    if (playerExists) {
+      alert('This player has already been added.');
+      return;
+    }
+
+    // Add player to the list
+    this.players.push({
+      name: this.PlayerName.trim(),
+      number: this.PlayerNumber,
+      position: this.PlayerPosition.trim(),
+    });
+
+    // Reset fields after adding the player
+    this.PlayerName = '';
+    this.PlayerNumber = '';
+    this.PlayerPosition = '';
+
+    alert('Player added successfully!');
   }
 
-  // Add a sub-player
+
   addSubPlayer() {
-    if (this.newSubPlayerName.trim()) {
-      this.subplayers.push({ name: this.newSubPlayerName });
-      this.newSubPlayerName = '';
-    } else {
-      alert('Please enter a sub-player name.');
+    // Validate inputs
+    if (!this.SubPlayerName.trim()) {
+      alert('Please provide sub-player name.');
+      return;
+    }
+
+    // Check if the sub-player already exists in the subNames array
+    const subPlayerExists = this.subNames.some(subPlayer => subPlayer.name === this.SubPlayerName.trim());
+
+    if (subPlayerExists) {
+      alert('This sub-player has already been added.');
+      return;
+    }
+
+    // Add sub-player to the array
+    this.subNames.push({
+      name: this.SubPlayerName.trim()
+    });
+
+    // Clear input fields after adding the sub-player
+    this.SubPlayerName = '';
+
+    alert(`Sub-player added successfully!`);
+  }
+
+
+  deletePlayer(player: any): void {
+    const index = this.players.indexOf(player);
+    if (index !== -1) {
+      this.players.splice(index, 1);  // Removes the player from the array
     }
   }
 
-  // Delete a player by number
-  deletePlayer(playerNumber: string) {
-    if (this.playersMap.has(playerNumber)) {
-      this.playersMap.delete(playerNumber);
-    } else {
-      alert('Player not found.');
+  deletesubPlayer(subPlayer: any): void {
+    const index = this.subNames.indexOf(subPlayer);
+    if (index !== -1) {
+      this.subNames.splice(index, 1);  // Removes the subplayer from the array
     }
   }
+
 
   // Submit team data to the TeamService
-  async submitTeam() {
+  submitTeam() {
     try {
-
-      // Ensure necessary data is available
-      if (!this.teamTitle || this.playersMap.size === 0) {
-        alert('Please ensure all team details are provided.');
+      // Check if there are players in the team
+      if (this.players.length === 0) {
+        alert('There are no players to submit.');
         return;
       }
 
-      // Prepare team data to be submitted
-      const teamData = {
-        title: this.teamTitle,
-        formation: this.currentFormation,
-        players: Array.from(this.playersMap.entries()).map(([number, player]) => ({
-          number: number,
-          name: player.name,
-          position: player.position
-        })),
-        subplayers: this.subplayers // Array of sub-players
-      };
+      // Check if there is a subplayer in the subNames list, otherwise pass undefined or empty string
+      const subPlayer = this.subNames.length > 0 ? this.subNames[0].name : undefined;
 
-      // Submit the data to the TeamService
-      await this.teamService.submitTeam(teamData);
+      // Then, submit each player in the players list
+      for (const player of this.players) {
+        this.teamService.submitTeam(
+          this.teamTitle.trim(),
+          this.currentFormation,
+          player.name,
+          player.number,
+          player.position,
+          subPlayer // Pass the subPlayer if exists, otherwise undefined
+        );
+      }
 
       // Inform the user of successful submission
       alert('Team submitted successfully!');
@@ -153,10 +200,5 @@ export class HomeComponent {
       console.error('Error submitting team:', error);
       alert('An error occurred while submitting the team. Please try again.');
     }
-  }
-
-  // Method to get the keys of playersMap
-  getPlayersCount(): number {
-    return this.playersMap.size; // Return the number of players in the Map
   }
 }
