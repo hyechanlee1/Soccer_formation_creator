@@ -40,7 +40,7 @@ export class HomeComponent {
   // Current section and formation tracking
   currentSection: string = 'styles';
   availableFormations = Object.keys(this.formations);
-  currentFormation = this.availableFormations[0] || ''; // Default formation
+  currentFormation = this.availableFormations[0]; // Default formation
 
   // Array to store added players
   players: Array<{

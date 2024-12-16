@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, query, collectionData, orderBy, where, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, query, collectionData, orderBy, where, getDocs, Timestamp } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 // Define a type for player
@@ -8,7 +8,8 @@ export interface FirestoreRec {
   formation: string,
   playerNumber: string,
   playerName: string,
-  playerPosition: string
+  playerPosition: string,
+  timestamp: Timestamp
 }
 
 @Injectable({
@@ -23,8 +24,8 @@ export class TeamService {
   teamCollection = collection(this.firestore, 'teams')
 
   constructor() {
-    const q = query(this.teamCollection, orderBy('teamTitle'));
-    this.teams$ = collectionData(q, { idField: 'id' }) as Observable<FirestoreRec[]>;
+    const teamQuery = query(this.teamCollection, orderBy('teamTitle'));
+    this.teams$ = collectionData(teamQuery, { idField: 'id' }) as Observable<FirestoreRec[]>;
   }
 
   // Submit team data
@@ -33,49 +34,36 @@ export class TeamService {
     formation: string,
     playerName: string,
     playerNumber: string,
-    playerPosition: string
+    playerPosition: string,
   ) {
     try {
       // Check if the player already exists by querying Firestore
-      const playerQuery = query(
+      const duplicateCheckQuery = query(
         this.teamCollection,
         where('playerName', '==', playerName),
         where('playerNumber', '==', playerNumber),
+        where('teamTitle', '==', teamTitle),
+        where('formation', '==', formation)
       );
 
-      const querySnapshot = await getDocs(playerQuery);
+      const duplicateSnapshot = await getDocs(duplicateCheckQuery);
 
-      if (!querySnapshot.empty) {
+      if (!duplicateSnapshot.empty) {
         // Player already exists, return or notify
-        alert(`${playerNumber} - ${playerName} player already exists.`);
+        alert(`${playerNumber} - ${playerName} already exists in the team.`);
         return;
-      }
-
-      // Check if the subPlayer already exists (only for sub-players)
-      if (playerPosition === 'Substitute') {
-        const subPlayerQuery = query(
-          this.teamCollection,
-          where('playerName', '==', playerName),
-          where('playerPosition', '==', 'Substitute')
-        );
-
-        const subPlayerQuerySnapshot = await getDocs(subPlayerQuery);
-
-        if (!subPlayerQuerySnapshot.empty) {
-          // Sub-player already exists, return or notify
-          alert(`${playerNumber} - ${playerName} sub-player already exists.`);
-          return;
-        }
       }
 
       // Submit the team data to Firestore
       await addDoc(this.teamCollection, {
-        teamTitle: teamTitle,
-        formation: formation,
-        playerName: playerName,
-        playerNumber: playerNumber,
-        playerPosition: playerPosition
+        teamTitle,
+        formation,
+        playerName,
+        playerNumber,
+        playerPosition,
+        timestamp: new Date()
       });
+
       alert('Team submitted successfully')
 
     } catch (error) {

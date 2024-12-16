@@ -20,8 +20,8 @@
         <label for="team-title">TITLE</label>
         <input type="text" id="team-title" [(ngModel)]="teamTitle" (ngModelChange)="onTeamTitleChange(teamTitle)"
           placeholder="Enter a team title" />
-        <label for="formation-select">FORMATION (or drag and drop players)</label>
-        <select id="formation-select" (change)="onFormationChange($event)">
+        <label for="formation-select">FORMATION</label>
+        <select id="formation-select" [(ngModel)]="currentFormation" (change)="onFormationChange($event)">
           @for (formation of availableFormations; track $index) {
           <option [value]="formation">{{ formation }}</option>
           }
