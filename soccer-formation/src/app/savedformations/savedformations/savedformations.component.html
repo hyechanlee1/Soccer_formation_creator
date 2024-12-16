@@ -6,13 +6,22 @@
   </ul>
 </nav>
 <div class="saved-formation-container">
-  <h2>Lineup Name</h2>
-  <h3>Created on 12/4/2024</h3>
-  <hr>
-  @for (team of teamService.teams$ | async; track team) {
-  <ul>
-    <li>{{ team.teamTitle }} - {{ team.formation }} - {{ team.playerName }} - {{ team.playerNumber }} - {{
-      team.playerPosition }}</li>
-  </ul>
-  }
+  <h2>Saved teams and formations</h2>
+  <div class="teams-cardlist">
+    @for (team of groupedTeams; track team) {
+    @for (formation of team.formations; track formation) {
+    <mat-card class="team-cards" appearance="outlined">
+      <mat-card-title>{{ team.teamTitle }} </mat-card-title>
+      <mat-card-subtitle>
+        Formation: {{ formation.name }}<br>
+        Created on: {{ formation.timestamp.toDate() | date:'mediumDate' }}
+      </mat-card-subtitle>
+      @for (player of formation.players; track player) { <ul>
+        <li>{{ player.playerNumber}} - {{ player.playerName }} - {{ player.playerPosition }}</li>
+      </ul>
+      }
+    </mat-card>
+    }
+    }
+  </div>
 </div>
