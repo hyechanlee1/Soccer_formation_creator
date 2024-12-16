@@ -6,10 +6,9 @@ import { Observable } from 'rxjs';
 export interface FirestoreRec {
   teamTitle: string,
   formation: string,
-  playerNumber: number,
+  playerNumber: string,
   playerName: string,
-  playerPosition: string,
-  subPlayer?: string
+  playerPosition: string
 }
 
 @Injectable({
@@ -34,41 +33,50 @@ export class TeamService {
     formation: string,
     playerName: string,
     playerNumber: string,
-    playerPosition: string,
-    subPlayer?: string // subPlayer is optional
+    playerPosition: string
   ) {
     try {
       // Check if the player already exists by querying Firestore
       const playerQuery = query(
         this.teamCollection,
         where('playerName', '==', playerName),
-        where('playerNumber', '==', playerNumber)
+        where('playerNumber', '==', playerNumber),
       );
 
       const querySnapshot = await getDocs(playerQuery);
 
       if (!querySnapshot.empty) {
         // Player already exists, return or notify
-        console.log('Player already exists.');
+        alert(`${playerNumber} - ${playerName} player already exists.`);
         return;
       }
 
-      // Create the team data object
-      const teamData: { [key: string]: any } = {
+      // Check if the subPlayer already exists (only for sub-players)
+      if (playerPosition === 'Substitute') {
+        const subPlayerQuery = query(
+          this.teamCollection,
+          where('playerName', '==', playerName),
+          where('playerPosition', '==', 'Substitute')
+        );
+
+        const subPlayerQuerySnapshot = await getDocs(subPlayerQuery);
+
+        if (!subPlayerQuerySnapshot.empty) {
+          // Sub-player already exists, return or notify
+          alert(`${playerNumber} - ${playerName} sub-player already exists.`);
+          return;
+        }
+      }
+
+      // Submit the team data to Firestore
+      await addDoc(this.teamCollection, {
         teamTitle: teamTitle,
         formation: formation,
         playerName: playerName,
         playerNumber: playerNumber,
         playerPosition: playerPosition
-      };
-
-      // Only add subPlayer to the object if it exists
-      if (subPlayer) {
-        teamData['subPlayer'] = subPlayer;
-      }
-
-      // Submit the team data to Firestore
-      await addDoc(this.teamCollection, teamData);
+      });
+      alert('Team submitted successfully')
 
     } catch (error) {
       console.error('Error submitting team data:', error);
