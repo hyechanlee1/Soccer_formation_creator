@@ -35,6 +35,7 @@ export class HomeComponent {
   PlayerNumber: string = '';
   PlayerPosition: string = '';
   SubPlayerName: string = '';
+  SubPlayerNumber: string = '';
 
   // Current section and formation tracking
   currentSection: string = 'styles';
@@ -43,14 +44,15 @@ export class HomeComponent {
 
   // Array to store added players
   players: Array<{
-    number: string;
     name: string;
+    number: string;
     position: string;
   }> = [];
 
   // Array to store added subplayers
   subNames: Array<{
     name: string;
+    number: string;
   }> = []
 
   constructor(private teamService: TeamService) { }
@@ -61,6 +63,7 @@ export class HomeComponent {
     this.PlayerNumber = '';
     this.PlayerPosition = '';
     this.SubPlayerName = '';
+    this.SubPlayerNumber = '';
     this.currentFormation = this.availableFormations[0];
   }
 
@@ -126,13 +129,14 @@ export class HomeComponent {
 
   addSubPlayer() {
     // Validate inputs
-    if (!this.SubPlayerName.trim()) {
+    if (!this.SubPlayerName.trim() || !this.SubPlayerNumber) {
       alert('Please provide sub-player name.');
       return;
     }
 
     // Check if the sub-player already exists in the subNames array
-    const subPlayerExists = this.subNames.some(subPlayer => subPlayer.name === this.SubPlayerName.trim());
+    const subPlayerExists = this.subNames.some(subPlayer =>
+      subPlayer.name === this.SubPlayerName.trim() && subPlayer.number === this.SubPlayerNumber);
 
     if (subPlayerExists) {
       alert('This sub-player has already been added.');
@@ -141,11 +145,13 @@ export class HomeComponent {
 
     // Add sub-player to the array
     this.subNames.push({
-      name: this.SubPlayerName.trim()
+      name: this.SubPlayerName.trim(),
+      number: this.SubPlayerNumber
     });
 
     // Clear input fields after adding the sub-player
     this.SubPlayerName = '';
+    this.SubPlayerNumber = '';
 
     alert(`Sub-player added successfully!`);
   }
@@ -167,37 +173,43 @@ export class HomeComponent {
 
 
   // Submit team data to the TeamService
-  submitTeam() {
+  async submitTeam() {
     try {
       // Check if there are players in the team
-      if (this.players.length === 0) {
-        alert('There are no players to submit.');
+      if (this.players.length === 0 && this.subNames.length === 0) {
+        alert('There are no players or sub-players to submit.');
         return;
       }
 
-      // Check if there is a subplayer in the subNames list, otherwise pass undefined or empty string
-      const subPlayer = this.subNames.length > 0 ? this.subNames[0].name : undefined;
-
-      // Then, submit each player in the players list
-      for (const player of this.players) {
-        this.teamService.submitTeam(
-          this.teamTitle.trim(),
-          this.currentFormation,
-          player.name,
-          player.number,
-          player.position,
-          subPlayer // Pass the subPlayer if exists, otherwise undefined
-        );
+      if (this.players.length > 0) {
+        for (const player of this.players) {
+          await this.teamService.submitTeam(
+            this.teamTitle.trim(),
+            this.currentFormation,
+            player.name,
+            player.number,
+            player.position
+          );
+        };
       }
 
-      // Inform the user of successful submission
-      alert('Team submitted successfully!');
+      if (this.subNames.length > 0) {
+        for (const subPlayer of this.subNames) {
+          await this.teamService.submitTeam(
+            this.teamTitle.trim(),
+            this.currentFormation,
+            subPlayer.name,
+            subPlayer.number,
+            'Substitute'
+          );
+        };
+      }
 
       // Reset the form after submission
       this.resetForm();
     } catch (error) {
       // Handle any errors that occur during submission
-      console.error('Error submitting team:', error);
+      console.error('Error submitting team and sub-players:', error);
       alert('An error occurred while submitting the team. Please try again.');
     }
   }

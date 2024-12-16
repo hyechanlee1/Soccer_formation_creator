@@ -9,5 +9,10 @@
   <h2>Lineup Name</h2>
   <h3>Created on 12/4/2024</h3>
   <hr>
-
+  @for (team of teamService.teams$ | async; track team) {
+  <ul>
+    <li>{{ team.teamTitle }} - {{ team.formation }} - {{ team.playerName }} - {{ team.playerNumber }} - {{
+      team.playerPosition }}</li>
+  </ul>
+  }
 </div>
