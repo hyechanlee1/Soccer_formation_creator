@@ -46,11 +46,12 @@
         <div class="sub-player-list">
           <div class="sub-player">
             <label for="sub-player-name">Sub-Player Name:</label>
-            <input type="number" id="sub-player-name" [(ngModel)]="SubPlayerName" placeholder="Enter sub-player name" />
+            <input type="text" id="sub-player-name" [(ngModel)]="SubPlayerName" placeholder="Enter sub-player name" />
           </div>
           <div class="sub-player">
             <label for="sub-player-number">Sub-Player Number:</label>
-            <input type="text" id="sub-player-Number" [(ngModel)]="SubPlayerNumber" placeholder="Enter sub-player #" />
+            <input type="number" id="sub-player-Number" [(ngModel)]="SubPlayerNumber"
+              placeholder="Enter sub-player #" />
           </div>
         </div>
         <button class="add-button" (click)="addSubPlayer()">Add Sub-Player</button>
