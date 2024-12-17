@@ -24,6 +24,11 @@
 
 .nav-links li {
   display: inline;
+
+}
+ul {
+  list-style: none;
+  font-family: Radikal;
 }
 
 .action-button {
@@ -49,7 +54,7 @@
 
 .teams-cardlist {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   overflow-y: auto;
   padding: 16px;
@@ -66,7 +71,38 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 600px) {
+img{
+  height: 40%;
+  object-fit: contain;
+}
+
+mat-card-title,mat-card-subtitle {
+  font-family: Radikal;
+  font-weight: 400;
+  color:#38003C;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+thead {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+
+@media (max-width: 800px) {
+  .teams-cardlist{
+    grid-template-columns: repeat(1, 1fr);
+
+
+  }
   .navbar {
     padding: 1rem;
   }

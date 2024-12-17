@@ -1,6 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 
-
+@font-face {
+  font-family: Radikal;
+  src: url(assets/images/font/Radikal/Nootype\ -\ Radikal\ Medium.otf); 
+  font-weight: 400;
+}
+@font-face {
+  font-family: Radikal;
+  src: url(assets/images/font/Radikal/Nootype\ -\ Radikal\ Light.otf); 
+  font-weight: 200;
+}
 html,
 body {
   background-color: #38003C;
@@ -22,5 +31,11 @@ body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Radikal;
+  font-weight: 400;
+}
+
+* {
+  font-family: Radikal;
+  font-weight: 200;
 }

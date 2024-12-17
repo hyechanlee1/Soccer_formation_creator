@@ -16,10 +16,27 @@
         Formation: {{ formation.name }}<br>
         Created on: {{ formation.timestamp.toDate() | date:'mediumDate' }}
       </mat-card-subtitle>
-      @for (player of formation.players; track player) { <ul>
-        <li>{{ player.playerNumber}} - {{ player.playerName }} - {{ player.playerPosition }}</li>
-      </ul>
-      }
+      <img [src]="backgroundImage(formation.name)">
+
+      <table>
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>Name</th>
+            <th>Position</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (player of formation.players; track player) {
+          <tr>
+            <td>{{ player.playerNumber }}</td>
+            <td>{{ player.playerName }}</td>
+            <td>{{ player.playerPosition }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      
     </mat-card>
     }
     }
