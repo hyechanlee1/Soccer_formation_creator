@@ -1,16 +1,10 @@
 {
   "hosting": {
-    "public": "/dist/soccer-formation/browser",
+    "public": "dist/soccer-formation/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
     ]
   }
 }
